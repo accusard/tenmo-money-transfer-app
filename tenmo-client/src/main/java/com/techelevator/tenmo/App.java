@@ -4,6 +4,8 @@ import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
 public class App {
 
@@ -11,6 +13,8 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
+    private final RestTemplate restTemplate = new RestTemplate();
+
 
     private AuthenticatedUser currentUser;
 
@@ -46,7 +50,19 @@ public class App {
         System.out.println("Please register a new user account");
         UserCredentials credentials = consoleService.promptForCredentials();
         if (authenticationService.register(credentials)) {
-            System.out.println("Registration successful. You can now login.");
+            // Set initial balance for the new user
+            String url = API_BASE_URL + "account/" + credentials.getUsername() + "/balance";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(currentUser.getToken());
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Double> entity = new HttpEntity<>(1000.0, headers); // Set initial balance to 1000 TE Bucks
+            ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                System.out.println("Registration successful. You can now login.");
+            } else {
+                System.out.println("Failed to set initial balance. Status code: " + response.getStatusCodeValue());
+            }
         } else {
             consoleService.printErrorMessage();
         }
@@ -86,7 +102,10 @@ public class App {
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-		
+        // do http request to tenmo server with JWT
+        // print the response
+//        restTemplate.exchange(apiurl + /account/balance)
+
 	}
 
 	private void viewTransferHistory() {

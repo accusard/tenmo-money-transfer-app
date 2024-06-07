@@ -1,0 +1,17 @@
+Create the database
+Setup connection between Postgres and the application
+Implement User Registration and Authentication
+Implementation of the Account Balance functionality ( Server side) to retrieve and display the account balance from the user
+a) Create Account controller
+b) Create AccountService class
+c) Create AccountDao interface
+Implement transfer functionality to handle transfer ( Server side )
+a) Create transfer controller
+b) Create TransferService class
+c) Create TransferDao interface
+(App) Complete the implementation and integrate with the RESTful API, you'll need to implement the remaining methods
+viewCurrentBalance
+viewTransferHistory
+viewPendingRequests
+sendBucks
+requestBucks
