@@ -2,13 +2,9 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
-import com.techelevator.util.BasicLogger;
-import org.springframework.http.*;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 public class App {
@@ -16,6 +12,7 @@ public class App {
     private static final String API_BASE_URL = "http://localhost:8080/";
 
     private final ConsoleService consoleService = new ConsoleService();
+    private final AccountService accountService = new AccountService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -55,29 +52,13 @@ public class App {
         UserCredentials credentials = consoleService.promptForCredentials();
         if (authenticationService.register(credentials)) {
             // Set initial balance for the new user
-            currentUser = authenticationService.login(credentials);
-            if(currentUser != null) {
-                String url = API_BASE_URL + "account/" + credentials.getUsername() + "/balance";
-                HttpHeaders headers = new HttpHeaders();
-                headers.setBearerAuth(currentUser.getToken());
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                HttpEntity<Double> entity = new HttpEntity<>(1000.0, headers); // Set initial balance to 1000 TE Bucks
-                try {
-                    ResponseEntity<AuthenticatedUser> response = restTemplate.exchange(url, HttpMethod.PUT, entity, AuthenticatedUser.class);
-
-                    if (response.getStatusCode() == HttpStatus.OK) {
-                        System.out.println("Registration successful. You can now login.");
-                    } else {
-                        System.out.println("Failed to set initial balance. Status code: " + response.getStatusCodeValue());
-                    }
-                } catch (RestClientResponseException | ResourceAccessException e) {
-                    BasicLogger.log(e.getMessage());
-                }
-            }
+            AuthenticatedUser newUser = authenticationService.login(credentials);
+            accountService.createAccount(newUser, 1000.0);
         } else {
             consoleService.printErrorMessage();
         }
     }
+
 
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
