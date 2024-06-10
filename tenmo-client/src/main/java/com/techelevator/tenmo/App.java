@@ -84,6 +84,7 @@ public class App {
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
+                viewAccounts();
                 sendBucks();
             } else if (menuSelection == 5) {
                 requestBucks();
@@ -116,10 +117,6 @@ public class App {
 
 	private void sendBucks() {
 
-        ResponseEntity<Account[]> response = restTemplate.exchange(API_BASE_URL+"accounts", HttpMethod.GET, makeEntityForCurrentUser(), Account[].class);
-        List<Account> accounts = List.of(response.getBody());
-        consoleService.printUsers(accounts);
-
         int accountToId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel): ");
         BigDecimal amount = consoleService.promptForBigDecimal("Enter amount you want to send: ");
         TransferRequest transferRequest = new TransferRequest(amount, accountToId);
@@ -131,6 +128,13 @@ public class App {
 		// TODO Auto-generated method stub
 		
 	}
+
+    private void viewAccounts() {
+
+        ResponseEntity<Account[]> response = restTemplate.exchange(API_BASE_URL+"accounts", HttpMethod.GET, makeEntityForCurrentUser(), Account[].class);
+        List<Account> accounts = List.of(response.getBody());
+        consoleService.printUsers(accounts);
+    }
 
     private HttpEntity<String> makeEntityForCurrentUser() {
         HttpHeaders headers = new HttpHeaders();
