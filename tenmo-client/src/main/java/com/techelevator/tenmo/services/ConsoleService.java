@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.TransferRequest;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.Scanner;
 public class ConsoleService {
 
     private final Scanner scanner = new Scanner(System.in);
+    final String LINE = "--------------------------------------";
 
     public int promptForMenuSelection(String prompt) {
         int menuSelection;
@@ -82,7 +84,6 @@ public class ConsoleService {
     }
 
     public void printUsers(List<Account> accounts) {
-        final String LINE = "--------------------------------------";
         System.out.println(LINE);
         System.out.println("Users");
         System.out.printf("%-12s %s\n", "ID", "Name");
@@ -102,5 +103,38 @@ public class ConsoleService {
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
     }
+
+    public void printTransfersList(List<TransferRequest> transfers) {
+        System.out.println(LINE);
+        System.out.println("Transfers");
+        System.out.println(String.format("%-10s %-15s %10s", "ID", "From/To", "Amount"));
+        System.out.println(LINE);
+
+        for(TransferRequest t : transfers) {
+            long id = t.getTransferId();
+            //TODO: need to get the actual name of the account holder
+            String name = Integer.toString(t.getAccountFrom());
+            BigDecimal amount = t.getAmount();
+            System.out.println(String.format("%-10d %-15s $ %5.2f", id, name, amount));
+        }
+
+        System.out.println("-------");
+    }
+
+    public void printTransferDetails(TransferRequest transfer) {
+        System.out.println(LINE);
+        System.out.println("Transfer Details");
+        System.out.println(LINE);
+        String detailsStr = String.format(
+                "Id: %d\n" +
+                "From: %s\n" +
+                "To: %s\n" +
+                "Type: %s\n" +
+                "Status: %s\n" +
+                "Amount: $%f.2\n",
+                transfer.getTransferId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getTypeId(),
+                transfer.getStatusId(), transfer.getAmount());
+    }
+
 
 }
