@@ -4,14 +4,18 @@ import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
-import java.util.BitSet;
 import java.util.List;
 
 public class App {
@@ -81,6 +85,7 @@ public class App {
                 viewCurrentBalance();
             } else if (menuSelection == 2) {
                 viewTransferHistory();
+                viewTransferDetail();
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
@@ -96,7 +101,9 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance() {
+
+
+    private void viewCurrentBalance() {
 
         ResponseEntity<BigDecimal> response = restTemplate.exchange(API_BASE_URL + "balance", HttpMethod.GET, makeEntityForCurrentUser(), BigDecimal.class);
         BigDecimal balance = response.getBody();
@@ -105,9 +112,24 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		
+		ResponseEntity<TransferRequest[]> response = restTemplate.exchange(API_BASE_URL + "transfers/list", HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest[].class);
+        consoleService.printTransfersList(List.of(response.getBody()));
+
 	}
+
+    private void viewTransferDetail() {
+        int transferId = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
+
+        if(transferId > 0) {
+            try {
+                ResponseEntity<TransferRequest> response = restTemplate.exchange(API_BASE_URL  + "transfers/" + transferId, HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest.class);
+
+                consoleService.printTransferDetails(response.getBody());
+            } catch (RestClientResponseException | ResourceAccessException e) {
+                BasicLogger.log(e.getMessage());
+            }
+        }
+    }
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub

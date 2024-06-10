@@ -3,19 +3,41 @@ package com.techelevator.tenmo.model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+
 @Entity
 @Table(name = "transfer")
-public class TransferRequest {
+public class Transfer {
+    public enum Type {
+        Request(1),
+        Send(2);
 
-    public TransferRequest() {
+        private final int integer;
 
+        Type(int type) {
+            this.integer = type;
+        }
+
+        public int toInt() {
+            return integer;
+        }
     }
 
-    public TransferRequest(BigDecimal amount, int accountToId) {
-        this.amount = amount;
-        this.accountTo = accountToId;
-    }
 
+    public enum Status {
+        Pending(1),
+        Approved(2),
+        Rejected(3);
+
+        private final int integer;
+
+        Status(int type) {
+            this.integer = type;
+        }
+
+        public int toInt() {
+            return integer;
+        }
+    }
     @Id
     @Column(name = "transfer_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,13 +98,6 @@ public class TransferRequest {
     public void setAccountTo(int accountTo) {
         this.accountTo = accountTo;
     }
-    public int getAccountToId() {
-        return accountTo;
-    }
-
-    public void setAccountToId(int accountToId) {
-        this.accountTo = accountToId;
-    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -91,4 +106,8 @@ public class TransferRequest {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
+
+
+
 }
