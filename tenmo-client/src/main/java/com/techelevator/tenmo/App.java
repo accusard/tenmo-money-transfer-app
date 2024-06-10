@@ -1,11 +1,18 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigDecimal;
+import java.util.BitSet;
+import java.util.List;
 
 public class App {
 
@@ -51,14 +58,11 @@ public class App {
         System.out.println("Please register a new user account");
         UserCredentials credentials = consoleService.promptForCredentials();
         if (authenticationService.register(credentials)) {
-            // Set initial balance for the new user
-            AuthenticatedUser newUser = authenticationService.login(credentials);
-            accountService.createAccount(newUser, 1000.0);
+            System.out.println("Registration successful. You can now login.");
         } else {
             consoleService.printErrorMessage();
         }
     }
-
 
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
@@ -93,10 +97,10 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-        // do http request to tenmo server with JWT
-        // print the response
-//        restTemplate.exchange(apiurl + /account/balance)
+
+        ResponseEntity<BigDecimal> response = restTemplate.exchange(API_BASE_URL + "balance", HttpMethod.GET, makeEntityForCurrentUser(), BigDecimal.class);
+        BigDecimal balance = response.getBody();
+        System.out.println("Your current account balance is: $" + balance);
 
 	}
 
@@ -111,8 +115,16 @@ public class App {
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		
+
+        ResponseEntity<Account[]> response = restTemplate.exchange(API_BASE_URL+"accounts", HttpMethod.GET, makeEntityForCurrentUser(), Account[].class);
+        List<Account> accounts = List.of(response.getBody());
+        consoleService.printUsers(accounts);
+
+        int accountToId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel): ");
+        BigDecimal amount = consoleService.promptForBigDecimal("Enter amount you want to send: ");
+        TransferRequest transferRequest = new TransferRequest(amount, accountToId);
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(API_BASE_URL+"send", HttpMethod.POST, makeEntityForTransfer(transferRequest), Void.class);
+
 	}
 
 	private void requestBucks() {
@@ -120,4 +132,17 @@ public class App {
 		
 	}
 
+    private HttpEntity<String> makeEntityForCurrentUser() {
+        HttpHeaders headers = new HttpHeaders();
+        String token = currentUser.getToken();
+        headers.set("Authorization", "Bearer " + token);
+        return new HttpEntity<>(headers);
+    }
+
+    private HttpEntity<TransferRequest> makeEntityForTransfer(TransferRequest tranferRequest) {
+        HttpHeaders headers = new HttpHeaders();
+        String token = currentUser.getToken();
+        headers.set("Authorization", "Bearer " + token);
+        return new HttpEntity<>(tranferRequest, headers);
+    }
 }

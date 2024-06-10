@@ -1,9 +1,11 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -77,6 +79,19 @@ public class ConsoleService {
                 System.out.println("Please enter a decimal number.");
             }
         }
+    }
+
+    public void printUsers(List<Account> accounts) {
+        final String LINE = "--------------------------------------";
+        System.out.println(LINE);
+        System.out.println("Users");
+        System.out.printf("%-12s %s\n", "ID", "Name");
+        System.out.println(LINE);
+
+        for (Account account : accounts) {
+            System.out.printf("%-12d %s\n", account.getAccountId(), account.getName());
+        }
+        System.out.println(LINE);
     }
 
     public void pause() {
