@@ -119,17 +119,22 @@ public class App {
 	}
 
     private void viewTransferDetail() {
-        int transferId = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
+        int transferId = -1;
 
-        if(transferId > 0) {
+        do {
+            transferId = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
             try {
-                ResponseEntity<TransferRequest> response = restTemplate.exchange(API_BASE_URL  + "transfers/" + transferId, HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest.class);
-
-                consoleService.printTransferDetails(response.getBody());
+                ResponseEntity<TransferRequest> response = restTemplate.exchange(API_BASE_URL  + "transfers/?id=" + transferId, HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest.class);
+                TransferRequest body = response.getBody();
+                if(body != null) {
+                    consoleService.printTransferDetails(body);
+                    consoleService.pause();
+                    viewTransferHistory();
+                }
             } catch (RestClientResponseException | ResourceAccessException e) {
                 BasicLogger.log(e.getMessage());
             }
-        }
+        } while (transferId > 0);
     }
 
 	private void viewPendingRequests() {

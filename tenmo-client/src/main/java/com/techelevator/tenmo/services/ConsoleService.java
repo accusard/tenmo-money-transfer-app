@@ -107,7 +107,7 @@ public class ConsoleService {
     public void printTransfersList(List<TransferRequest> transfers) {
         System.out.println(LINE);
         System.out.println("Transfers");
-        System.out.println(String.format("%-10s %-15s %10s", "ID", "From/To", "Amount"));
+        System.out.println(String.format("%-10s %-15s %5s", "ID", "From/To", "Amount"));
         System.out.println(LINE);
 
         for(TransferRequest t : transfers) {
@@ -131,9 +131,11 @@ public class ConsoleService {
                 "To: %s\n" +
                 "Type: %s\n" +
                 "Status: %s\n" +
-                "Amount: $%f.2\n",
+                "Amount: $%.2f\n",
                 transfer.getTransferId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getTypeId(),
                 transfer.getStatusId(), transfer.getAmount());
+
+        System.out.println(detailsStr);
     }
 
 
