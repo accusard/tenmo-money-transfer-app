@@ -7,10 +7,13 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+
 public class AccountService {
 
     private static final String API_BASE_URL = "http://localhost:8080/account/";
     private final RestTemplate restTemplate = new RestTemplate();
+
 
     public void createAccount(AuthenticatedUser user, double startingBalance) {
         if(user != null) {
@@ -33,4 +36,18 @@ public class AccountService {
             }
         }
     }
+    public BigDecimal getBalance(AuthenticatedUser user) {
+        String url = API_BASE_URL + "account/" + user.getUser().getId() + "/balance";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(user.getToken());
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<BigDecimal> response = restTemplate.exchange(url, HttpMethod.GET, entity, BigDecimal.class);
+            return response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return BigDecimal.ZERO;
+    }
+    
 }

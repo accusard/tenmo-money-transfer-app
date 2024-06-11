@@ -7,6 +7,8 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+
 public class App {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
@@ -29,6 +31,7 @@ public class App {
         loginMenu();
         if (currentUser != null) {
             mainMenu();
+
         }
     }
     private void loginMenu() {
@@ -92,17 +95,14 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-        // do http request to tenmo server with JWT
-        // print the response
-//        restTemplate.exchange(apiurl + /account/balance)
-
-	}
+    private void viewCurrentBalance() {
+        Class<?> balance = accountService.getClass();
+        System.out.println("Your current account balance is: $" + balance);
+    }
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void viewPendingRequests() {
@@ -112,7 +112,7 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void requestBucks() {
