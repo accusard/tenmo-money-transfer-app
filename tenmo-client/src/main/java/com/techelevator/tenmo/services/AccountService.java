@@ -12,6 +12,7 @@ public class AccountService {
 
     private static final String API_BASE_URL = "http://localhost:8080/account/";
     private final RestTemplate restTemplate = new RestTemplate();
+    // method performs an authenticated GET request to a specified API endpoint to retrieve a list of accounts
 
 
 }

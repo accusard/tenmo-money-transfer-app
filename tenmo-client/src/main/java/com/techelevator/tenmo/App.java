@@ -153,6 +153,7 @@ public class App {
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
+        // // Display list of users to choose from and ask user to enter the amount to request
 		
 	}
 
