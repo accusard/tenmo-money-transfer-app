@@ -21,6 +21,8 @@ public class TransferRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transferId;
 
+    private Account account;
+
     @Column(name = "transfer_type_id")
     private int typeId;
 
@@ -35,6 +37,14 @@ public class TransferRequest {
 
     @Column(name = "amount")
     private BigDecimal amount;
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 
     public long getTransferId() {
         return transferId;

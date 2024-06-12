@@ -1,12 +1,12 @@
 package com.techelevator.tenmo.services;
 
-import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.entities.Transfer;
+import com.techelevator.tenmo.entities.TransferUserNameProjection;
 import com.techelevator.tenmo.repositories.TransferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TransferService {
@@ -25,5 +25,10 @@ public class TransferService {
 
     public Transfer getTransfer(Long id) {
         return transferRepository.findByTransferId(id).orElse(null);
+    }
+
+    public String getUserNameByTransferId(Integer transferId) {
+        TransferUserNameProjection proj = transferRepository.findUserNameByTransferId(transferId);
+        return proj != null ? proj.getUserName() : null;
     }
 }

@@ -1,12 +1,11 @@
 package com.techelevator.tenmo.controller;
 
-import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.entities.Transfer;
 import com.techelevator.tenmo.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("transfers/")

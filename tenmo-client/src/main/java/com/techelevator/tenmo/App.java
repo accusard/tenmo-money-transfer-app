@@ -123,6 +123,7 @@ public class App {
             try {
                 ResponseEntity<TransferRequest> response = restTemplate.exchange(API_BASE_URL  + "transfers/?id=" + transferId, HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest.class);
                 TransferRequest body = response.getBody();
+
                 if(body != null) {
                     consoleService.printTransferDetails(body);
                     consoleService.pause();

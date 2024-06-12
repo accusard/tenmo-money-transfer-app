@@ -1,4 +1,4 @@
-package com.techelevator.tenmo.model;
+package com.techelevator.tenmo.entities;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -7,37 +7,6 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "transfer")
 public class Transfer {
-    public enum Type {
-        Request(1),
-        Send(2);
-
-        private final int integer;
-
-        Type(int type) {
-            this.integer = type;
-        }
-
-        public int toInt() {
-            return integer;
-        }
-    }
-
-
-    public enum Status {
-        Pending(1),
-        Approved(2),
-        Rejected(3);
-
-        private final int integer;
-
-        Status(int type) {
-            this.integer = type;
-        }
-
-        public int toInt() {
-            return integer;
-        }
-    }
     @Id
     @Column(name = "transfer_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +26,28 @@ public class Transfer {
 
     @Column(name = "amount")
     private BigDecimal amount;
+    @ManyToOne
+    @JoinColumn(name = "account_from", insertable = false, updatable = false)
+    private Account accountFromEntity;
+    @ManyToOne
+    @JoinColumn(name = "account_to", insertable = false, updatable = false)
+    private Account accountToEntity;
+
+    public Account getAccountFromEntity() {
+        return accountFromEntity;
+    }
+
+    public void setAccountFromEntity(Account accountFromEntity) {
+        this.accountFromEntity = accountFromEntity;
+    }
+
+    public Account getAccountToEntity() {
+        return accountToEntity;
+    }
+
+    public void setAccountToEntity(Account accountToEntity) {
+        this.accountToEntity = accountToEntity;
+    }
 
     public long getTransferId() {
         return transferId;
@@ -107,6 +98,29 @@ public class Transfer {
         this.amount = amount;
     }
 
+    public String getStatus() {
+        switch (this.statusId) {
+            case 1:
+                return "Pending";
+            case 2:
+                return "Approved";
+            case 3:
+                return "Rejected";
+            default:
+                return "Unknown status";
+        }
+    }
+
+    public String getType() {
+        switch (this.typeId) {
+            case 1:
+                return "Request";
+            case 2:
+                return "Send";
+            default:
+                return "Unknown Type";
+        }
+    }
 
 
 
