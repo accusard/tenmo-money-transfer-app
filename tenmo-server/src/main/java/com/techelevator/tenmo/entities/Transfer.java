@@ -26,28 +26,6 @@ public class Transfer {
 
     @Column(name = "amount")
     private BigDecimal amount;
-    @ManyToOne
-    @JoinColumn(name = "account_from", insertable = false, updatable = false)
-    private Account accountFromEntity;
-    @ManyToOne
-    @JoinColumn(name = "account_to", insertable = false, updatable = false)
-    private Account accountToEntity;
-
-    public Account getAccountFromEntity() {
-        return accountFromEntity;
-    }
-
-    public void setAccountFromEntity(Account accountFromEntity) {
-        this.accountFromEntity = accountFromEntity;
-    }
-
-    public Account getAccountToEntity() {
-        return accountToEntity;
-    }
-
-    public void setAccountToEntity(Account accountToEntity) {
-        this.accountToEntity = accountToEntity;
-    }
 
     public long getTransferId() {
         return transferId;

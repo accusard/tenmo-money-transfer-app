@@ -20,16 +20,6 @@ public class TenmoUser {
 
     @Column(name = "role")
     String role;
-    @OneToMany(mappedBy = "tenmoUser")
-    private List<Account> accounts;
-
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
-    }
 
     public void setUserId(int userId) {
         this.userId = userId;
