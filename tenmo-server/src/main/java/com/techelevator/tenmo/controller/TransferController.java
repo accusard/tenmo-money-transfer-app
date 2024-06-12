@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("transfers/")
@@ -24,8 +25,8 @@ public class TransferController {
         return transferService.startTransfer(transfer);
     }
 
-    @GetMapping("{id}")
-    public Transfer getTransferById(@PathVariable long id) {
-        return transferService.getTransferById(id);
+    @GetMapping("")
+    public Transfer getTransfer(Long id) {
+        return transferService.getTransfer(id);
     }
 }

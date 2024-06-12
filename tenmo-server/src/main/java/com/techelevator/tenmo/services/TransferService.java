@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransferService {
@@ -22,7 +23,7 @@ public class TransferService {
         return transferRepository.save(transfer);
     }
 
-    public Transfer getTransferById(long id) {
-        return transferRepository.getOne(id);
+    public Transfer getTransfer(Long id) {
+        return transferRepository.findByTransferId(id).orElse(null);
     }
 }

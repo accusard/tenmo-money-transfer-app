@@ -19,7 +19,7 @@ public class TransferRequest {
     @Id
     @Column(name = "transfer_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long transferId;
+    private Long transferId;
 
     @Column(name = "transfer_type_id")
     private int typeId;
