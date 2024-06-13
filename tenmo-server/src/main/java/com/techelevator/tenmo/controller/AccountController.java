@@ -61,4 +61,9 @@ public class AccountController {
         User user = userDao.getUserByUsername(username);
         return user.getId();
     }
+
+    @GetMapping("/account/{id}")
+    public String getAccountUserName(@PathVariable int id) {
+        return userDao.getUserById(id).getUsername();
+    }
 }

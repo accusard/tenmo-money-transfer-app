@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.TransferRequest;
 import com.techelevator.tenmo.model.UserCredentials;
 
@@ -104,7 +105,7 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
 
-    public void printTransfersList(List<TransferRequest> transfers) {
+    public void printTransfersList(AuthenticatedUser user, List<TransferRequest> transfers, AccountService service) {
         System.out.println(LINE);
         System.out.println("Transfers");
         System.out.println(String.format("%-10s %-15s %5s", "ID", "From/To", "Amount"));
@@ -112,10 +113,14 @@ public class ConsoleService {
 
         for(TransferRequest t : transfers) {
             long id = t.getTransferId();
-            //TODO: need to get the actual name of the account holder
-            String name = Integer.toString(t.getAccountFrom());
+
+            StringBuilder fromTo = new StringBuilder();
+
+            fromTo.append(t.getAccountFromId());
+            fromTo.append(" - ");
+            fromTo.append(t.getAccountToId());
             BigDecimal amount = t.getAmount();
-            System.out.println(String.format("%-10d %-15s $ %5.2f", id, name, amount));
+            System.out.println(String.format("%-10d %-15s $ %5.2f", id, fromTo, amount));
         }
 
         System.out.println("-------");
@@ -132,8 +137,8 @@ public class ConsoleService {
                 "Type: %s\n" +
                 "Status: %s\n" +
                 "Amount: $%.2f\n",
-                transfer.getTransferId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getTypeId(),
-                transfer.getStatusId(), transfer.getAmount());
+                transfer.getTransferId(), transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getType(),
+                transfer.getStatus(), transfer.getAmount());
 
         System.out.println(detailsStr);
     }

@@ -7,11 +7,9 @@ import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -110,8 +108,9 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-		ResponseEntity<TransferRequest[]> response = restTemplate.exchange(API_BASE_URL + "transfers/list", HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest[].class);
-        consoleService.printTransfersList(List.of(response.getBody()));
+//		ResponseEntity<TransferRequest[]> response = restTemplate.exchange(API_BASE_URL + "account/transfers/", HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest[].class);
+        TransferRequest[] transfers = accountService.getTransferHistory(currentUser);
+        consoleService.printTransfersList(currentUser, List.of(transfers), accountService);
 
 	}
 
@@ -121,8 +120,9 @@ public class App {
         do {
             transferId = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
             try {
-                ResponseEntity<TransferRequest> response = restTemplate.exchange(API_BASE_URL  + "transfers/?id=" + transferId, HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest.class);
-                TransferRequest body = response.getBody();
+//                ResponseEntity<TransferRequest> response = restTemplate.exchange(API_BASE_URL  + "transfers/" + transferId, HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest.class);
+//                TransferRequest body = response.getBody();
+                TransferRequest body = accountService.getTransferDetails(currentUser, transferId);
 
                 if(body != null) {
                     consoleService.printTransferDetails(body);
@@ -140,7 +140,7 @@ public class App {
             ResponseEntity<TransferRequest[]> response = restTemplate.exchange(API_BASE_URL + "transfers/pending", HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest[].class);
             TransferRequest[] pendingRequests = response.getBody();
             if (pendingRequests != null && pendingRequests.length > 0) {
-                consoleService.printTransfersList(List.of(pendingRequests));
+                consoleService.printTransfersList(currentUser, List.of(pendingRequests), accountService);
             } else {
                 System.out.println("No pending requests.");
             }

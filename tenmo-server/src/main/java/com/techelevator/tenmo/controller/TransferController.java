@@ -8,24 +8,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("transfers/")
+@RequestMapping("account/transfers/")
 public class TransferController {
 
     @Autowired
     TransferService transferService;
 
-    @GetMapping("list")
+    @GetMapping("")
     public List<Transfer> getTransfers() {
         return transferService.getTransfers();
     }
 
-    @PostMapping("starttransfer")
+    @PostMapping("")
     public Transfer startTransfer(@RequestBody Transfer transfer) {
         return transferService.startTransfer(transfer);
     }
 
-    @GetMapping("")
-    public Transfer getTransfer(Long id) {
+    @GetMapping("{id}")
+    public Transfer getTransfer(@PathVariable Long id) {
         return transferService.getTransfer(id);
     }
 }

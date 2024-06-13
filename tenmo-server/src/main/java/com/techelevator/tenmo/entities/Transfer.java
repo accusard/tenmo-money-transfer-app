@@ -75,31 +75,4 @@ public class Transfer {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-
-    public String getStatus() {
-        switch (this.statusId) {
-            case 1:
-                return "Pending";
-            case 2:
-                return "Approved";
-            case 3:
-                return "Rejected";
-            default:
-                return "Unknown status";
-        }
-    }
-
-    public String getType() {
-        switch (this.typeId) {
-            case 1:
-                return "Request";
-            case 2:
-                return "Send";
-            default:
-                return "Unknown Type";
-        }
-    }
-
-
-
 }
