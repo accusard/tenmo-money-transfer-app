@@ -1,6 +1,9 @@
 package com.techelevator.tenmo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +15,7 @@ public class TenmoUser {
     @Column(name = "user_id")
     int userId;
 
-    @Column(name = "user_name")
+    @Column(name = "username")
     String userName;
 
     @Column(name = "password_hash")
@@ -20,6 +23,20 @@ public class TenmoUser {
 
     @Column(name = "role")
     String role;
+
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "account",
+    joinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
+    private List<Account> accounts = new ArrayList<>();
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
+    }
 
     public void setUserId(int userId) {
         this.userId = userId;

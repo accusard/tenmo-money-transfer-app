@@ -108,9 +108,8 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-//		ResponseEntity<TransferRequest[]> response = restTemplate.exchange(API_BASE_URL + "account/transfers/", HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest[].class);
         TransferRequest[] transfers = accountService.getTransferHistory(currentUser);
-        consoleService.printTransfersList(currentUser, List.of(transfers), accountService);
+        consoleService.printTransfersList(currentUser, accountService, List.of(transfers));
 
 	}
 
@@ -120,12 +119,10 @@ public class App {
         do {
             transferId = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
             try {
-//                ResponseEntity<TransferRequest> response = restTemplate.exchange(API_BASE_URL  + "transfers/" + transferId, HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest.class);
-//                TransferRequest body = response.getBody();
                 TransferRequest body = accountService.getTransferDetails(currentUser, transferId);
 
                 if(body != null) {
-                    consoleService.printTransferDetails(body);
+                    consoleService.printTransferDetails(currentUser, accountService, body);
                     consoleService.pause();
                     viewTransferHistory();
                 }
@@ -140,7 +137,7 @@ public class App {
             ResponseEntity<TransferRequest[]> response = restTemplate.exchange(API_BASE_URL + "transfers/pending", HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest[].class);
             TransferRequest[] pendingRequests = response.getBody();
             if (pendingRequests != null && pendingRequests.length > 0) {
-                consoleService.printTransfersList(currentUser, List.of(pendingRequests), accountService);
+                consoleService.printTransfersList(currentUser, accountService, List.of(pendingRequests));
             } else {
                 System.out.println("No pending requests.");
             }

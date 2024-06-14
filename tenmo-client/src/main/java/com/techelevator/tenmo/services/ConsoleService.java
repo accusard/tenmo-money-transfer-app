@@ -105,7 +105,7 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
 
-    public void printTransfersList(AuthenticatedUser user, List<TransferRequest> transfers, AccountService service) {
+    public void printTransfersList(AuthenticatedUser user, AccountService service, List<TransferRequest> transfers) {
         System.out.println(LINE);
         System.out.println("Transfers");
         System.out.println(String.format("%-10s %-15s %5s", "ID", "From/To", "Amount"));
@@ -116,9 +116,9 @@ public class ConsoleService {
 
             StringBuilder fromTo = new StringBuilder();
 
-            fromTo.append(t.getAccountFromId());
+            fromTo.append(service.getUserNameByAccountId(user, t.getAccountFromId()));
             fromTo.append(" - ");
-            fromTo.append(t.getAccountToId());
+            fromTo.append(service.getUserNameByAccountId(user, t.getAccountToId()));
             BigDecimal amount = t.getAmount();
             System.out.println(String.format("%-10d %-15s $ %5.2f", id, fromTo, amount));
         }
@@ -126,7 +126,7 @@ public class ConsoleService {
         System.out.println("-------");
     }
 
-    public void printTransferDetails(TransferRequest transfer) {
+    public void printTransferDetails(AuthenticatedUser user, AccountService service, TransferRequest transfer) {
         System.out.println(LINE);
         System.out.println("Transfer Details");
         System.out.println(LINE);
@@ -137,8 +137,10 @@ public class ConsoleService {
                 "Type: %s\n" +
                 "Status: %s\n" +
                 "Amount: $%.2f\n",
-                transfer.getTransferId(), transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getType(),
-                transfer.getStatus(), transfer.getAmount());
+                transfer.getTransferId(),
+                service.getUserNameByAccountId(user, transfer.getAccountFromId()),
+                service.getUserNameByAccountId(user, transfer.getAccountToId()),
+                transfer.getType(),transfer.getStatus(), transfer.getAmount());
 
         System.out.println(detailsStr);
     }

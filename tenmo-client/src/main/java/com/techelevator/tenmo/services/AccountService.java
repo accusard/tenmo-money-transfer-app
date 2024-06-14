@@ -5,7 +5,6 @@ import com.techelevator.tenmo.model.TransferRequest;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
@@ -64,12 +63,13 @@ public class AccountService {
         return transfer;
     }
 
-    public String getAccountUserNameById(AuthenticatedUser user, int id) {
+
+    public String getUserNameByAccountId(AuthenticatedUser user, int id) {
         ResponseEntity<String> response = null;
 
         try {
             response = restTemplate.exchange(
-                    API_BASE_URL + id,
+                    API_BASE_URL + "/" + id + "/username",
                     HttpMethod.GET,
                     makeAuthEntity(user),
                     String.class
