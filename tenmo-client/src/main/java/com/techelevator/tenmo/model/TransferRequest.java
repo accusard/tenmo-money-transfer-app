@@ -11,7 +11,7 @@ public class TransferRequest {
         this.amount = amount;
         this.accountTo = accountToId;
     }
-    private Long transferId;
+    private long transferId;
     private int typeId;
     private int statusId;
     private int accountFrom;
