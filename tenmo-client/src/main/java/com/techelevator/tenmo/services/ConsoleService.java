@@ -106,6 +106,9 @@ public class ConsoleService {
     }
 
     public void printTransfersList(AuthenticatedUser user, AccountService service, List<TransferRequest> transfers) {
+        final String FROM_STRING = "From: ";
+        final String TO_STRING = "To: ";
+
         System.out.println(LINE);
         System.out.println("Transfers");
         System.out.println(String.format("%-10s %-15s %5s", "ID", "From/To", "Amount"));
@@ -114,13 +117,13 @@ public class ConsoleService {
         for(TransferRequest t : transfers) {
             long id = t.getTransferId();
 
-            StringBuilder fromTo = new StringBuilder();
+            StringBuilder typeString = new StringBuilder();
+            final String PREFIX = t.getType().equals("Send") ? TO_STRING : FROM_STRING;
 
-            fromTo.append(service.getUserNameByAccountId(user, t.getAccountFromId()));
-            fromTo.append(" - ");
-            fromTo.append(service.getUserNameByAccountId(user, t.getAccountToId()));
+            typeString.append(PREFIX);
+            typeString.append(service.getUserNameByAccountId(user, t.getAccountToId()));
             BigDecimal amount = t.getAmount();
-            System.out.println(String.format("%-10d %-15s $ %5.2f", id, fromTo, amount));
+            System.out.println(String.format("%-10d %-15s $ %.2f", id, typeString, amount));
         }
 
         System.out.println("-------");

@@ -25,12 +25,6 @@ public class TransferController {
     @Autowired
     TenmoService tenmoService;
 
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("transfers/")
-    public List<Transfer> getTransfers() {
-        return transferService.getTransfers();
-    }
-
 //    @PostMapping("send")
 //    public Transfer sendTransfer(@RequestBody Transfer transfer) {
 //        return transferService.sendTransfer(transfer);
@@ -52,6 +46,18 @@ public class TransferController {
     @GetMapping("{id}")
     public Account getAccountByAccountId(@PathVariable int id) {
         return tenmoService.getAccountById(id);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("transfers/filter/{id}")
+    public List<Transfer> getTransfersByAccountId(@PathVariable int id) {
+        return transferService.getTransfersByAccountId(id);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("transfers")
+    public List<Transfer> getAllTransfers() {
+        return transferService.getAll();
     }
 
     @PreAuthorize("hasRole('USER')")
