@@ -18,9 +18,9 @@ public class TransferService {
         return transferRepository.findAll();
     }
 
-    public Transfer startTransfer(Transfer transfer) {
-        return transferRepository.save(transfer);
-    }
+//    public Transfer sendTransfer(Transfer transfer) {
+//        return transferRepository.save(transfer);
+//    }
 
     public Transfer getTransfer(Long id) {
         return transferRepository.findByTransferId(id).orElse(null);

@@ -69,41 +69,6 @@ public class JdbcAccountDao implements AccountDao {
         return accounts;
     }
 
-    @Override
-    public void transferTeBucks(int accountFromId, int accountToId, BigDecimal amount) {
-        if (accountFromId == accountToId || getAccountBalance(accountFromId).compareTo(amount) < 0) {
-            throw new DaoException("Transfer could not be completed!");
-        }
-
-        // Starts a transaction so if a one of the update fails none of them get commited.
-        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-        def.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
-        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus status = transactionManager.getTransaction(def);
-
-        String updateFromAccount = "UPDATE account SET balance = balance - ? WHERE account_id = ?";
-        String updateToAccount = "UPDATE account SET balance = balance + ? WHERE account_id = ?";
-        String insertTransfer = "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
-            "VALUES ((SELECT transfer_type_id FROM transfer_type WHERE transfer_type_desc = 'Send')," +
-            "(SELECT transfer_status_id FROM transfer_status WHERE transfer_status_desc = 'Approved')," +
-            "?, ?, ?)";
-
-        try {
-            jdbcTemplate.update(updateFromAccount, amount, accountFromId);
-            jdbcTemplate.update(updateToAccount, amount, accountToId);
-            jdbcTemplate.update(insertTransfer, accountFromId, accountToId, amount);
-
-            transactionManager.commit(status);
-
-        } catch (CannotGetJdbcConnectionException e) {
-            transactionManager.rollback(status);
-            throw new DaoException("Unable to connect to server or database", e);
-        } catch (DataIntegrityViolationException e) {
-            transactionManager.rollback(status);
-            throw new DaoException("Data integrity violation", e);
-        }
-    }
-
     private Account mapRowToAccount(SqlRowSet rowSet) {
         Account account = new Account();
         account.setUserId(rowSet.getInt("user_id"));

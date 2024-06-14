@@ -11,6 +11,4 @@ public interface AccountDao {
     BigDecimal getAccountBalance(int accountId);
 
     List<Account> getAccounts();
-
-    void transferTeBucks(int accountFromId, int accountToId, BigDecimal amount);
 }

@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Uses Spring Data JPA pattern to access database.
+ * Provides boilerplate code through repositories
+ * to perform common CRUD operations
+ */
 @RestController
 @RequestMapping("account/transfers/")
 public class TransferController {
@@ -19,10 +24,10 @@ public class TransferController {
         return transferService.getTransfers();
     }
 
-    @PostMapping("")
-    public Transfer startTransfer(@RequestBody Transfer transfer) {
-        return transferService.startTransfer(transfer);
-    }
+//    @PostMapping("send")
+//    public Transfer sendTransfer(@RequestBody Transfer transfer) {
+//        return transferService.sendTransfer(transfer);
+//    }
 
     @GetMapping("{id}")
     public Transfer getTransfer(@PathVariable Long id) {

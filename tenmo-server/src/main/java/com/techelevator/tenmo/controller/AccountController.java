@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
+import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.Account;
@@ -14,16 +15,23 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
+/**
+ * Uses DAO pattern to access database
+ * The DAO allows manual CRUD operations and
+ * flexibility
+ */
 @PreAuthorize("isAuthenticated()")
 @RestController
 public class AccountController {
 
     private final AccountDao accountDao;
+    private final TransferDao transferDao;
     private final UserDao userDao;
     private Principal principal;
 
-    public AccountController(AccountDao accountDao, UserDao userDao) {
+    public AccountController(AccountDao accountDao, TransferDao transferDao, UserDao userDao) {
         this.accountDao = accountDao;
+        this.transferDao = transferDao;
         this.userDao = userDao;
     }
 
@@ -52,7 +60,7 @@ public class AccountController {
     public void transfer(@RequestBody TransferRequest transferRequest, Principal principal) {
         try {
             int accountFromId = accountDao.getAccountId(getCurrentUserId(principal));
-            accountDao.transferTeBucks(accountFromId, transferRequest.getAccountToId(), transferRequest.getAmount());
+            transferDao.transferTeBucks(accountFromId, transferRequest.getAccountToId(), transferRequest.getAmount());
         } catch (DaoException ignored) {}
     }
 
