@@ -27,6 +27,10 @@ public class TenmoUser {
     @OneToMany(mappedBy = "tenmoUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Account> accounts;
 
+    public int getUserId() {
+        return userId;
+    }
+
     public Set<Account> getAccounts() {
         return accounts;
     }

@@ -2,7 +2,9 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.entities.Account;
 import com.techelevator.tenmo.entities.Transfer;
+import com.techelevator.tenmo.model.AccountTransferDto;
 import com.techelevator.tenmo.model.UserAccountDto;
+import com.techelevator.tenmo.services.AccountTransferService;
 import com.techelevator.tenmo.services.UserAccountService;
 import com.techelevator.tenmo.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class JpaAccountController {
     TransferService transferService;
     @Autowired
     UserAccountService userAccountService;
+    @Autowired
+    AccountTransferService accountTransferService;
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("transfers/{id}")
@@ -60,6 +64,14 @@ public class JpaAccountController {
     public List<UserAccountDto> getAllUserAccount() {
         return userAccountService.findAllUserAccount();
     }
-
-    //git commit -m "Add endpoint that perform mapping of TenmoUser and Account entities into a UserAccountDto"
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("account-transfers/id/{userId}")
+    public List<AccountTransferDto> getAllAccountTransfersByUser(@PathVariable int userId) {
+        return accountTransferService.findAllAccountTransfersByUser(userId);
+    }
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("account-transfers/username/{userName}")
+    public List<AccountTransferDto> getAllAccountTransfersByUser(@PathVariable String userName) {
+        return accountTransferService.findAllAccountTransfersByUser(userName);
+    }
 }

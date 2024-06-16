@@ -1,10 +1,9 @@
 package com.techelevator.tenmo.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "account")
@@ -22,6 +21,12 @@ public class Account {
     @ManyToOne()
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private TenmoUser tenmoUser;
+
+    @OneToMany(mappedBy = "accountTo")
+    private Set<Transfer> transfersTo;
+
+    @OneToMany(mappedBy = "accountFrom")
+    private Set<Transfer> transfersFrom;
 
     public TenmoUser getTenmoUser() {
         return tenmoUser;
