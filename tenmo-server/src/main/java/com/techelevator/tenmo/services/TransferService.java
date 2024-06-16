@@ -30,10 +30,6 @@ public class TransferService {
         return transfersById;
     }
 
-//    public Transfer sendTransfer(Transfer transfer) {
-//        return transferRepository.save(transfer);
-//    }
-
     public Transfer getTransfer(Long id) {
         return transferRepository.findByTransferId(id).orElse(null);
     }

@@ -1,9 +1,9 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.entities.Account;
-import com.techelevator.tenmo.entities.TenmoUser;
 import com.techelevator.tenmo.entities.Transfer;
-import com.techelevator.tenmo.services.TenmoService;
+import com.techelevator.tenmo.model.UserAccountDto;
+import com.techelevator.tenmo.services.UserAccountService;
 import com.techelevator.tenmo.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,34 +18,17 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("account/")
-public class TransferController {
+public class JpaAccountController {
 
     @Autowired
     TransferService transferService;
     @Autowired
-    TenmoService tenmoService;
-
-//    @PostMapping("send")
-//    public Transfer sendTransfer(@RequestBody Transfer transfer) {
-//        return transferService.sendTransfer(transfer);
-//    }
+    UserAccountService userAccountService;
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("transfers/{id}")
     public Transfer getTransfer(@PathVariable Long id) {
         return transferService.getTransfer(id);
-    }
-
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("{id}/username")
-    public String getUserNameByAccountId(@PathVariable int id) {
-        return tenmoService.getUserNameByAccountNumber(id);
-    }
-
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("{id}")
-    public Account getAccountByAccountId(@PathVariable int id) {
-        return tenmoService.getAccountById(id);
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -61,8 +44,22 @@ public class TransferController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("users")
-    public List<TenmoUser> getAllUsers() {
-        return tenmoService.findAll();
+    @GetMapping("{id}/username")
+    public String getUserNameByAccountId(@PathVariable int id) {
+        return userAccountService.getUserNameByAccountId(id);
     }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("{id}")
+    public Account getAccountByAccountId(@PathVariable int id) {
+        return userAccountService.getAccountByAccountId(id);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("user-account")
+    public List<UserAccountDto> getAllUserAccount() {
+        return userAccountService.findAllUserAccount();
+    }
+
+    //git commit -m "Add endpoint that perform mapping of TenmoUser and Account entities into a UserAccountDto"
 }

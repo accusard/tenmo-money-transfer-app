@@ -19,17 +19,17 @@ public class Account {
     @Column(name = "balance")
     BigDecimal balance;
 
-//    @ManyToOne()
-//    @JsonIgnore
-//    private TenmoUser tenmoUser;
+    @ManyToOne()
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private TenmoUser tenmoUser;
 
-//    public TenmoUser getTenmoUser() {
-//        return tenmoUser;
-//    }
-//
-//    public void setTenmoUser(TenmoUser tenmoUser) {
-//        this.tenmoUser = tenmoUser;
-//    }
+    public TenmoUser getTenmoUser() {
+        return tenmoUser;
+    }
+
+    public void setTenmoUser(TenmoUser tenmoUser) {
+        this.tenmoUser = tenmoUser;
+    }
 
     public int getAccountId() {
         return accountId;

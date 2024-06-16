@@ -22,14 +22,14 @@ import java.util.List;
  */
 @PreAuthorize("isAuthenticated()")
 @RestController
-public class AccountController {
+public class DaoAccountController {
 
     private final AccountDao accountDao;
     private final TransferDao transferDao;
     private final UserDao userDao;
     private Principal principal;
 
-    public AccountController(AccountDao accountDao, TransferDao transferDao, UserDao userDao) {
+    public DaoAccountController(AccountDao accountDao, TransferDao transferDao, UserDao userDao) {
         this.accountDao = accountDao;
         this.transferDao = transferDao;
         this.userDao = userDao;
