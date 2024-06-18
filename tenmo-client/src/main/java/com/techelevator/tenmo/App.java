@@ -11,7 +11,9 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class App {
 
@@ -134,12 +136,13 @@ public class App {
 
     private void viewPendingRequests() {
         try {
-            System.out.println("test1 View pending request succeeded ");
             ResponseEntity<TransferRequest[]> response = restTemplate.exchange(API_BASE_URL + "account/transfers/pending", HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest[].class);
             TransferRequest[] pendingRequests = response.getBody();
             if (pendingRequests != null && pendingRequests.length > 0) {
-               // consoleService.displayPendingTransfers(pendingRequests);
+                // consoleService.displayPendingTransfers(pendingRequests);
                 consoleService.printTransfersList(currentUser, accountService, List.of(pendingRequests));
+                handleTransferApprovalOrRejection(pendingRequests);
+
             } else {
                 System.out.println("No pending requests.Please check case 5");
             }
@@ -148,8 +151,71 @@ public class App {
             consoleService.printErrorMessage();
         }
     }
+    private void handleTransferApprovalOrRejection(TransferRequest[] pendingRequests) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Please enter transfer ID to approve/reject (0 to cancel): ");
+        int transferId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
 
-	private void sendBucks() {
+        if (transferId == 0) {
+            System.out.println("Action cancelled.");
+            return;
+        }
+
+        TransferRequest selectedTransfer = Arrays.stream(pendingRequests)
+                .filter(request -> request.getTransferId() == transferId)
+                .findFirst()
+                .orElse(null);
+
+        if (selectedTransfer == null) {
+            System.out.println("Invalid transfer ID. Please try again.");
+            return;
+        }
+
+        displayApprovalOptions(transferId);
+    }
+
+    private void displayApprovalOptions(int transferId) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Use case 9: Approve or reject pending transfer");
+        System.out.println("1: Approve");
+        System.out.println("2: Reject");
+        System.out.println("0: Don't approve or reject");
+        System.out.println("-------");
+        System.out.print("Please choose an option: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        switch (choice) {
+            case 1:
+                updateTransferStatus(transferId, "approve");
+                break;
+            case 2:
+                updateTransferStatus(transferId, "reject");
+                break;
+            case 0:
+                System.out.println("No action taken.");
+                break;
+            default:
+                System.out.println("Invalid option. Please try again.");
+                displayApprovalOptions(transferId); // Retry if invalid option
+                break;
+        }
+    }
+    private void updateTransferStatus(int transferId, String action) {
+        try {
+            String url = API_BASE_URL + "account/transfers/" + transferId + "/" + action;
+            restTemplate.put(url, makeEntityForCurrentUser());
+            System.out.println("Transfer " + action + "d successfully.");
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+            consoleService.printErrorMessage();
+        }
+    }
+
+
+    private void sendBucks() {
 
         int accountToId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel): ");
         BigDecimal amount = consoleService.promptForBigDecimal("Enter amount you want to send: ");
@@ -168,7 +234,7 @@ public class App {
 
                 int accountToId = consoleService.promptForInt("Enter ID of user you are requesting from (0 to cancel): ");
                 if (accountToId == 0) {
-                    return; 
+                    return;
                 }
                 BigDecimal amount = consoleService.promptForBigDecimal("Enter amount you want to request: ");
                 TransferRequest transferRequest = new TransferRequest(amount, accountToId);

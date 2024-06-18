@@ -10,6 +10,8 @@ import com.techelevator.tenmo.services.AccountTransferService;
 import com.techelevator.tenmo.services.UserAccountService;
 import com.techelevator.tenmo.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,7 +95,28 @@ public class JpaAccountController {
     }
     @PreAuthorize("hasRole('USER')")
     @PostMapping("request")
-        public TransferRequest createRequestTransfer(@RequestBody TransferRequest transfer) {
-        return transferService.createRequestTransfer(transfer);
+    public ResponseEntity<TransferRequest> createRequestTransfer(@RequestBody TransferRequest transfer, Principal principal) {
+        TenmoUser user = userAccountService.getUserByUsername(principal.getName());
+        return new ResponseEntity<>(transferService.createRequestTransfer(transfer,user.getUserId()), HttpStatus.CREATED);
+    }
+    @PreAuthorize("hasRole('USER')")
+    @PutMapping("/transfers/{transferId}/approve")
+    public ResponseEntity<String> approveTransfer(@PathVariable Long transferId) {
+        boolean result = transferService.updateTransferStatus(transferId, "approve");
+        if (result) {
+            return ResponseEntity.ok("Transfer approved successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to approve transfer.");
         }
+    }
+    @PreAuthorize("hasRole('USER')")
+    @PutMapping("/transfers/{transferId}/reject")
+    public ResponseEntity<String> rejectTransfer(@PathVariable Long transferId) {
+        boolean result = transferService.updateTransferStatus(transferId, "reject");
+        if (result) {
+            return ResponseEntity.ok("Transfer rejected successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to reject transfer.");
+        }
+    }
 }
