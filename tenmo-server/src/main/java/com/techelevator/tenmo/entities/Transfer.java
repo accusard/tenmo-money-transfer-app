@@ -28,6 +28,14 @@ public class Transfer {
     @Column(name = "amount")
     private BigDecimal amount;
 
+    @ManyToOne
+    @JoinColumn(name = "account_from", insertable = false, updatable = false)
+    private Account accountFromEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "account_to", insertable = false, updatable = false)
+    private Account accountToEntity;
+
     public long getTransferId() {
         return transferId;
     }

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TenmoUserRepository extends JpaRepository<TenmoUser, Integer> {
     public TenmoUser findByUserId(int id);
-
+    public TenmoUser findByUserName(String userName);
 }

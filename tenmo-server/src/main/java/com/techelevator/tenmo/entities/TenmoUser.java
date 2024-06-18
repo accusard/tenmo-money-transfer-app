@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "tenmo_user")
@@ -23,18 +24,14 @@ public class TenmoUser {
 
     @Column(name = "role")
     String role;
+    @OneToMany(mappedBy = "tenmoUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Account> accounts;
 
-    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(name = "account",
-    joinColumns = @JoinColumn(name = "user_id"))
-    @JsonIgnore
-    private List<Account> accounts = new ArrayList<>();
-
-    public List<Account> getAccounts() {
+    public Set<Account> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(List<Account> accounts) {
+    public void setAccounts(Set<Account> accounts) {
         this.accounts = accounts;
     }
     public int getUserId() {
