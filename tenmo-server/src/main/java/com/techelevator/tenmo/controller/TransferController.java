@@ -3,12 +3,14 @@ package com.techelevator.tenmo.controller;
 import com.techelevator.tenmo.entities.Account;
 import com.techelevator.tenmo.entities.TenmoUser;
 import com.techelevator.tenmo.entities.Transfer;
+import com.techelevator.tenmo.model.TransferRequest;
 import com.techelevator.tenmo.services.TenmoService;
 import com.techelevator.tenmo.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -64,5 +66,21 @@ public class TransferController {
     @GetMapping("users")
     public List<TenmoUser> getAllUsers() {
         return tenmoService.findAll();
+
     }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("transfers/pending")
+    public List<Transfer> getPendingTransfers(Principal principal) {
+        System.out.println("test1");
+
+        TenmoUser user = tenmoService.getUserByUsername(principal.getName());
+        System.out.println((user.getUsername()));
+        return transferService.getPendingTransfersByAccountId(user.getUserId());
+    }
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("request")
+        public TransferRequest createRequestTransfer(@RequestBody TransferRequest transfer) {
+        return transferService.createRequestTransfer(transfer);
+        }
 }

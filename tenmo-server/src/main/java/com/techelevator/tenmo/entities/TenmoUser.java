@@ -37,12 +37,15 @@ public class TenmoUser {
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
     }
+    public int getUserId() {
+        return userId;
+    }
 
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return userName;
     }
 
@@ -65,4 +68,5 @@ public class TenmoUser {
     public void setRole(String role) {
         this.role = role;
     }
+
 }

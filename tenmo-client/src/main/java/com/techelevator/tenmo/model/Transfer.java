@@ -1,38 +1,31 @@
-package com.techelevator.tenmo.entities;
+package com.techelevator.tenmo.model;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 
-
-@Entity
-@Table(name = "transfer")
 public class Transfer {
 
-    @Id
-    @Column(name = "transfer_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transferId;
-
-    @Column(name = "transfer_type_id")
     private int typeId;
-
-    @Column(name = "transfer_status_id")
     private int statusId;
-
-    @Column(name = "account_from")
     private int accountFrom;
-
-    @Column(name = "account_to")
     private int accountTo;
-
-    @Column(name = "amount")
     private BigDecimal amount;
+    private String accountToUsername;
 
-    public long getTransferId() {
+    // Constructor
+    public Transfer() {
+    }
+
+    // Getters and setters
+    public String getAccountToUsername() {
+        return accountToUsername;
+        }
+
+    public Long getTransferId() {
         return transferId;
     }
 
-    public void setTransferId(long transferId) {
+    public void setTransferId(Long transferId) {
         this.transferId = transferId;
     }
 
@@ -46,7 +39,6 @@ public class Transfer {
 
     public int getStatusId() {
         return statusId;
-
     }
 
     public void setStatusId(int statusId) {
@@ -76,8 +68,17 @@ public class Transfer {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-    public String getStatus() {
-        return TransferStatus.fromId(this.statusId).getDescription();
-    }
 
+    // toString() method for debugging and logging
+    @Override
+    public String toString() {
+        return "Transfer{" +
+                "transferId=" + transferId +
+                ", typeId=" + typeId +
+                ", statusId=" + statusId +
+                ", accountFrom=" + accountFrom +
+                ", accountTo=" + accountTo +
+                ", amount=" + amount +
+                '}';
+    }
 }

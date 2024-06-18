@@ -5,6 +5,8 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.TransferRequest;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.Transfer;
+
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -114,7 +116,7 @@ public class ConsoleService {
         System.out.println(String.format("%-10s %-15s %5s", "ID", "From/To", "Amount"));
         System.out.println(LINE);
 
-        for(TransferRequest t : transfers) {
+        for (TransferRequest t : transfers) {
             long id = t.getTransferId();
 
             StringBuilder typeString = new StringBuilder();
@@ -135,20 +137,35 @@ public class ConsoleService {
         System.out.println(LINE);
         String detailsStr = String.format(
                 "Id: %d\n" +
-                "From: %s\n" +
-                "To: %s\n" +
-                "Type: %s\n" +
-                "Status: %s\n" +
-                "Amount: $%.2f\n",
+                        "From: %s\n" +
+                        "To: %s\n" +
+                        "Type: %s\n" +
+                        "Status: %s\n" +
+                        "Amount: $%.2f\n",
                 transfer.getTransferId(),
                 service.getUserNameByAccountId(user, transfer.getAccountFromId()),
                 service.getUserNameByAccountId(user, transfer.getAccountToId()),
-                transfer.getType(),transfer.getStatus(), transfer.getAmount());
+                transfer.getType(), transfer.getStatus(), transfer.getAmount());
 
         System.out.println(detailsStr);
     }
 
-    //  // Method for displaying a list of user accounts, prompting for user input for account selection and request amounts, waiting for user input to continue, and handling error messages.
+    public void displayPendingTransfers(TransferRequest[] transfers) {
+        if (transfers.length == 0) {
+            System.out.println("There are no pending transfers.");
+        } else {
+            System.out.println("-------------------------------------------");
+            System.out.println("Pending Transfers");
+            System.out.println("ID          To                     Amount");
+            System.out.println("-------------------------------------------");
+            for (TransferRequest transfer : transfers) {
+                System.out.printf("%-12d %-22s $ %.2f%n", transfer.getTransferId(), transfer.getAccountFromId(), transfer.getAmount());
+            }
+            System.out.println("-------------------------------------------");
+        }
 
 
+        //  // Method for displaying a list of user accounts, prompting for user input for account selection and request amounts, waiting for user input to continue, and handling error messages.
+
+    }
 }

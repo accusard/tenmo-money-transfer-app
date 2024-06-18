@@ -134,12 +134,14 @@ public class App {
 
     private void viewPendingRequests() {
         try {
-            ResponseEntity<TransferRequest[]> response = restTemplate.exchange(API_BASE_URL + "transfers/pending", HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest[].class);
+            System.out.println("test1 View pending request succeeded ");
+            ResponseEntity<TransferRequest[]> response = restTemplate.exchange(API_BASE_URL + "account/transfers/pending", HttpMethod.GET, makeEntityForCurrentUser(), TransferRequest[].class);
             TransferRequest[] pendingRequests = response.getBody();
             if (pendingRequests != null && pendingRequests.length > 0) {
+               // consoleService.displayPendingTransfers(pendingRequests);
                 consoleService.printTransfersList(currentUser, accountService, List.of(pendingRequests));
             } else {
-                System.out.println("No pending requests.");
+                System.out.println("No pending requests.Please check case 5");
             }
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
@@ -163,14 +165,14 @@ public class App {
 
             if (accounts != null && !accounts.isEmpty()) {
                 consoleService.printUsers(accounts);
+
                 int accountToId = consoleService.promptForInt("Enter ID of user you are requesting from (0 to cancel): ");
                 if (accountToId == 0) {
                     return; 
                 }
                 BigDecimal amount = consoleService.promptForBigDecimal("Enter amount you want to request: ");
-                TransferRequest transferRequest = new TransferRequest();
-
-                ResponseEntity<Void> responseEntity = restTemplate.exchange(API_BASE_URL + "request", HttpMethod.POST, makeEntityForTransfer(transferRequest), Void.class);
+                TransferRequest transferRequest = new TransferRequest(amount, accountToId);
+                ResponseEntity<Void> responseEntity = restTemplate.exchange(API_BASE_URL + "account/request", HttpMethod.POST, makeEntityForTransfer(transferRequest), Void.class);
                 if (responseEntity.getStatusCode() == HttpStatus.CREATED) {
                     System.out.println("Request sent successfully.");
                 } else {
@@ -200,9 +202,11 @@ public class App {
     }
 
     private HttpEntity<TransferRequest> makeEntityForTransfer(TransferRequest tranferRequest) {
+        System.out.println(tranferRequest.getAccountToId());
         HttpHeaders headers = new HttpHeaders();
         String token = currentUser.getToken();
         headers.set("Authorization", "Bearer " + token);
         return new HttpEntity<>(tranferRequest, headers);
     }
+
 }
