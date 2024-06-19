@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface TransferRepository extends JpaRepository<Transfer, Long> {
     Optional<Transfer> findByTransferId(Long id);
+    int findByAccountTo(long id);
+    int findByAccountFrom(long id);
 }

@@ -14,10 +14,10 @@ public class Transfer {
     private Long transferId;
 
     @Column(name = "transfer_type_id")
-    private int typeId;
+    private int transferTypeId;
 
     @Column(name = "transfer_status_id")
-    private int statusId;
+    private int transferStatusId;
 
     @Column(name = "account_from")
     private int accountFrom;
@@ -44,21 +44,21 @@ public class Transfer {
         this.transferId = transferId;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public int getTransferTypeId() {
+        return transferTypeId;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setTransferTypeId(int transferTypeId) {
+        this.transferTypeId = transferTypeId;
     }
 
-    public int getStatusId() {
-        return statusId;
+    public int getTransferStatusId() {
+        return transferStatusId;
 
     }
 
-    public void setStatusId(int statusId) {
-        this.statusId = statusId;
+    public void setTransferStatusId(int transferStatusId) {
+        this.transferStatusId = transferStatusId;
     }
 
     public int getAccountFrom() {
@@ -85,7 +85,7 @@ public class Transfer {
         this.amount = amount;
     }
     public String getStatus() {
-        return TransferStatus.fromId(this.statusId).getDescription();
+        return TransferStatus.fromId(this.transferStatusId).getDescription();
     }
 
 }

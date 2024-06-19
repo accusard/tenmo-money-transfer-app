@@ -5,7 +5,6 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.TransferRequest;
 import com.techelevator.tenmo.model.UserCredentials;
-import com.techelevator.tenmo.model.Transfer;
 
 
 import java.math.BigDecimal;
@@ -130,6 +129,18 @@ public class ConsoleService {
 
         System.out.println("-------");
     }
+
+//    public StringBuilder formatSendReceive(TransferRequest t) {
+//        // incomplete
+//        final String FROM_STRING = "From: ";
+//        final String TO_STRING = "To: ";
+//
+//        StringBuilder typeString = new StringBuilder();
+//        String type = t.getType();
+//        final String PREFIX = type.equals("Send") ? TO_STRING : FROM_STRING;
+//
+//        return typeString
+//    }
 
     public void printTransferDetails(AuthenticatedUser user, AccountService service, TransferRequest transfer) {
         System.out.println(LINE);

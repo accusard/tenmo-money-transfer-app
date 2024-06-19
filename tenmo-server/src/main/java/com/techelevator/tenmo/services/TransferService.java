@@ -55,7 +55,7 @@ public class TransferService {
 
         // Stream API for filtering
         pendingTransfers = allTransfers.stream()
-                .filter(transfer -> transfer.getAccountTo() == accountId && transfer.getStatusId() == 1)
+                .filter(transfer -> transfer.getAccountTo() == accountId && transfer.getTransferStatusId() == 1)
                 .peek(transfer -> {
 
                     // Fetch user information (assuming these methods are correct)
@@ -82,7 +82,7 @@ public class TransferService {
         transfer.setAccountTo(transferRequest.getAccountToId());
         transfer.setAccountFrom(accountId);
         transfer.setAmount(transferRequest.getAmount());
-        transfer.setStatusId(1);
+        transfer.setTransferStatusId(1);
         transferRepository.save(transfer);
         // Set other properties as needed
 
@@ -96,13 +96,13 @@ public class TransferService {
             Account accountTo = accountRepository.findById(transfer.getAccountTo()).orElseThrow(() -> new RuntimeException("Account not found"));
             Account accountFrom = accountRepository.findById(transfer.getAccountFrom()).orElseThrow(() -> new RuntimeException("Account not found"));
             if ("approve".equalsIgnoreCase(action)) {
-                transfer.setStatusId(2); // Assuming '2' is the status for approved
+                transfer.setTransferStatusId(2); // Assuming '2' is the status for approved
                 accountTo.setBalance(accountTo.getBalance().add(transfer.getAmount()));
                 accountFrom.setBalance(accountFrom.getBalance().subtract(transfer.getAmount()));
                 accountRepository.save(accountTo);
                 accountRepository.save(accountFrom);
             } else if ("reject".equalsIgnoreCase(action)) {
-                transfer.setStatusId(3); // Assuming '3' is the status for rejected
+                transfer.setTransferStatusId(3); // Assuming '3' is the status for rejected
             } else {
                 return false;
             }

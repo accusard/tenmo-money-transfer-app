@@ -73,12 +73,12 @@ public class JpaAccountController {
     public List<UserAccountDto> getAllUserAccount() {
         return userAccountService.findAllUserAccount();
     }
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @GetMapping("account-transfers/id/{userId}")
     public List<AccountTransferDto> getAllAccountTransfersByUser(@PathVariable int userId) {
         return accountTransferService.findAllAccountTransfersByUser(userId);
     }
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @GetMapping("account-transfers/username/{userName}")
     public List<AccountTransferDto> getAllAccountTransfersByUser(@PathVariable String userName) {
         return accountTransferService.findAllAccountTransfersByUser(userName);

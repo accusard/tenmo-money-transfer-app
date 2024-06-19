@@ -35,7 +35,7 @@ public class AccountService {
         TransferRequest[] transfers = null;
         try {
             ResponseEntity<TransferRequest[]> response = restTemplate.exchange(
-                    API_BASE_URL + "transfers/",
+                    API_BASE_URL + "account-transfers/username/" + user.getUser().getUsername(),
                     HttpMethod.GET,
                     makeAuthEntity(user),
                     TransferRequest[].class

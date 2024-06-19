@@ -12,8 +12,8 @@ public class TransferRequest {
         this.accountTo = accountToId;
     }
     private long transferId;
-    private int typeId;
-    private int statusId;
+    private int transferTypeId;
+    private int transferStatusId;
     private int accountFrom;
     private int accountTo;
     private BigDecimal amount;
@@ -26,21 +26,21 @@ public class TransferRequest {
         this.transferId = transferId;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public int getTransferTypeId() {
+        return transferTypeId;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setTransferTypeId(int transferTypeId) {
+        this.transferTypeId = transferTypeId;
     }
 
-    public int getStatusId() {
-        return statusId;
+    public int getTransferStatusId() {
+        return transferStatusId;
 
     }
 
-    public void setStatusId(int statusId) {
-        this.statusId = statusId;
+    public void setTransferStatusId(int transferStatusId) {
+        this.transferStatusId = transferStatusId;
     }
 
     public int getAccountFromId() {
@@ -71,7 +71,7 @@ public class TransferRequest {
     }
 
     public String getStatus() {
-        switch (this.statusId) {
+        switch (this.transferStatusId) {
             case 1:
                 return "Pending";
             case 2:
@@ -84,7 +84,7 @@ public class TransferRequest {
     }
 
     public String getType() {
-        switch (this.typeId) {
+        switch (this.transferTypeId) {
             case 1:
                 return "Request";
             case 2:

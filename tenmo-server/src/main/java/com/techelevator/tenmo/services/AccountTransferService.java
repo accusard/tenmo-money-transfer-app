@@ -23,19 +23,23 @@ public class AccountTransferService {
 
     public List<AccountTransferDto> findAllAccountTransfersByUser(int userId) {
         Account userAccount = accountRepository.findByUserId(userId);
+        int accountId = userAccount.getAccountId();
 
-        return transferRepository.findAll().stream()
+        return (transferRepository.findAll().stream()
+                .filter(transfer -> transfer.getAccountTo() == accountId || transfer.getAccountFrom() == accountId )
                 .map(transfer -> new AccountTransferDto(
                         userAccount.getUserId(),
                         userAccount.getAccountId(),
                         userAccount.getBalance(),
                         transfer.getTransferId(),
-                        transfer.getTypeId(),
-                        transfer.getStatusId(),
+                        transfer.getTransferTypeId(),
+                        transfer.getTransferStatusId(),
                         transfer.getAccountFrom(),
                         transfer.getAccountTo(),
                         transfer.getAmount()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+
+        //
     }
 
     public List<AccountTransferDto> findAllAccountTransfersByUser(String userName) {
