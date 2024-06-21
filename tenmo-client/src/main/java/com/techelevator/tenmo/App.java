@@ -1,19 +1,25 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.excpetion.InvalidAccountIdException;
 import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.util.BasicLogger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class App {
 
@@ -86,7 +92,7 @@ public class App {
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
-                viewAccounts();
+                consoleService.printUsers(viewAccounts());
                 sendBucks();
             } else if (menuSelection == 5) {
                 requestBucks();
@@ -102,11 +108,16 @@ public class App {
 
 
     private void viewCurrentBalance() {
+        try {
 
-        ResponseEntity<BigDecimal> response = restTemplate.exchange(API_BASE_URL + "balance", HttpMethod.GET, makeEntityForCurrentUser(), BigDecimal.class);
-        BigDecimal balance = response.getBody();
-        System.out.println("Your current account balance is: $" + balance);
+            ResponseEntity<BigDecimal> response = restTemplate.exchange(API_BASE_URL + "balance", HttpMethod.GET, makeEntityForCurrentUser(), BigDecimal.class);
+            BigDecimal balance = response.getBody();
+            consoleService.printBalance(balance);
 
+        } catch (RestClientResponseException e) {
+            BasicLogger.log("HTTP error while retrieving balance: " + e.getMessage());
+            System.err.println("An error occurred while retrieving the balance");
+        }
 	}
 
 	private void viewTransferHistory() {
@@ -216,13 +227,21 @@ public class App {
 
 
     private void sendBucks() {
+        try {
+            int accountToId = consoleService.promptForAccountId();
+            validateAccountId(accountToId);
+            BigDecimal amount = consoleService.promptForAmount();
+            TransferRequest transferRequest = new TransferRequest(amount, accountToId);
+            ResponseEntity<Void> responseEntity = restTemplate.exchange(API_BASE_URL+"send", HttpMethod.POST, makeEntityForTransfer(transferRequest), Void.class);
 
-        int accountToId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel): ");
-        BigDecimal amount = consoleService.promptForBigDecimal("Enter amount you want to send: ");
-        TransferRequest transferRequest = new TransferRequest(amount, accountToId);
-        ResponseEntity<Void> responseEntity = restTemplate.exchange(API_BASE_URL+"send", HttpMethod.POST, makeEntityForTransfer(transferRequest), Void.class);
+        } catch (InvalidAccountIdException e) {
+            BasicLogger.log("Invalid Account Id: " + e.getMessage());
+            System.err.println(e.getMessage());
+        } catch (HttpClientErrorException.BadRequest e) {
+            handleBadRequest(e);
+        }
 
-	}
+    }
 
     private void requestBucks() {
         try {
@@ -253,11 +272,21 @@ public class App {
         }
     }
 
-    private void viewAccounts() {
-
+    private List<Account> viewAccounts() {
         ResponseEntity<Account[]> response = restTemplate.exchange(API_BASE_URL+"accounts", HttpMethod.GET, makeEntityForCurrentUser(), Account[].class);
         List<Account> accounts = List.of(response.getBody());
-        consoleService.printUsers(accounts);
+        return accounts;
+    }
+
+    private void validateAccountId(int accountId) throws InvalidAccountIdException {
+        if (!getAccountsIds(viewAccounts()).contains(accountId))
+            throw new InvalidAccountIdException("Account Id does not exist");
+    }
+
+    private List<Integer> getAccountsIds (List<Account> accounts) {
+        return accounts.stream()
+                .map(Account::getAccountId)
+                .collect(Collectors.toList());
     }
 
     private HttpEntity<String> makeEntityForCurrentUser() {
@@ -267,12 +296,24 @@ public class App {
         return new HttpEntity<>(headers);
     }
 
-    private HttpEntity<TransferRequest> makeEntityForTransfer(TransferRequest tranferRequest) {
-        System.out.println(tranferRequest.getAccountToId());
+    private HttpEntity<TransferRequest> makeEntityForTransfer(TransferRequest transferRequest) {
+        System.out.println(transferRequest.getAccountToId());
         HttpHeaders headers = new HttpHeaders();
         String token = currentUser.getToken();
         headers.set("Authorization", "Bearer " + token);
-        return new HttpEntity<>(tranferRequest, headers);
+        return new HttpEntity<>(transferRequest, headers);
+    }
+
+    private void handleBadRequest(HttpClientErrorException.BadRequest e) {
+        String errorMessage = e.getResponseBodyAsString();
+        try {
+            BasicLogger.log(e.getMessage());
+            JSONObject error = new JSONObject(errorMessage);
+            String message = error.getString("message");
+            System.err.println(message);
+        } catch (JSONException e1) {
+            BasicLogger.log(e1.getMessage());
+        }
     }
 
 }

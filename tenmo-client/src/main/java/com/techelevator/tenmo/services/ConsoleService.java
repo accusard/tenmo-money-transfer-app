@@ -85,6 +85,21 @@ public class ConsoleService {
         }
     }
 
+    public int promptForAccountId() {
+        return promptForInt("Enter ID of user you are sending to (0 to cancel): ");
+    }
+
+    public BigDecimal promptForAmount() {
+        return promptForBigDecimal("Enter amount to transfer: ");
+    }
+
+    public void printBalance(BigDecimal balance) {
+        if (balance != null)
+            System.out.println("Your current account balance is: $" + balance);
+        else
+            System.out.println("Unable to retrieve account balance. Please try again later.");
+    }
+
     public void printUsers(List<Account> accounts) {
         System.out.println(LINE);
         System.out.println("Users");

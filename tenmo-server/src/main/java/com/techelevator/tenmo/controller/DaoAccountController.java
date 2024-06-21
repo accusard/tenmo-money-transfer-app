@@ -4,9 +4,11 @@ import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.exception.DaoException;
+import com.techelevator.tenmo.exception.TransferExecption;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.TransferRequest;
 import com.techelevator.tenmo.model.User;
+import org.hibernate.TransactionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +63,11 @@ public class DaoAccountController {
         try {
             int accountFromId = accountDao.getAccountId(getCurrentUserId(principal));
             transferDao.transferTeBucks(accountFromId, transferRequest.getAccountToId(), transferRequest.getAmount());
-        } catch (DaoException ignored) {}
+        } catch (DaoException ignored) {
+
+        } catch (TransferExecption e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to send transfer!, " + e.getMessage());
+        }
     }
 
     public int getCurrentUserId(Principal principal) {
