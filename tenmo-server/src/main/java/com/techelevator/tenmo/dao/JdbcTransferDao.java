@@ -1,6 +1,5 @@
 package com.techelevator.tenmo.dao;
 
-import com.techelevator.tenmo.entities.Account;
 import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.exception.TransferExecption;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,18 +12,18 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Component
-public class jdbcTransferDao implements TransferDao {
+public class JdbcTransferDao implements TransferDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final PlatformTransactionManager transactionManager;
 
-    public jdbcTransferDao(JdbcTemplate jdbcTemplate, PlatformTransactionManager transactionManager) {
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate, PlatformTransactionManager transactionManager) {
         this.jdbcTemplate = jdbcTemplate;
         this.transactionManager = transactionManager;
     }
+
 
     @Override
     public void transferTeBucks(int accountFromId, int accountToId, BigDecimal amount) throws TransferExecption {

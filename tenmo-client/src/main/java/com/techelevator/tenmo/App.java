@@ -280,7 +280,7 @@ public class App {
 
     private void validateAccountId(int accountId) throws InvalidAccountIdException {
         if (!getAccountsIds(viewAccounts()).contains(accountId))
-            throw new InvalidAccountIdException("Account Id does not exist");
+            throw new InvalidAccountIdException("Account does not exist");
     }
 
     private List<Integer> getAccountsIds (List<Account> accounts) {
