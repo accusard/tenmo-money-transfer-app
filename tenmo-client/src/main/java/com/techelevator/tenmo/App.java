@@ -15,7 +15,6 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -87,8 +86,8 @@ public class App {
             if (menuSelection == 1) {
                 viewCurrentBalance();
             } else if (menuSelection == 2) {
-                viewTransferHistory();
-                viewTransferDetail();
+                TransferRequest[] transfers = viewTransferHistory();
+                viewTransferDetail(transfers);
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
@@ -120,21 +119,23 @@ public class App {
         }
 	}
 
-	private void viewTransferHistory() {
+	private TransferRequest[] viewTransferHistory() {
         TransferRequest[] transfers = accountService.getTransferHistory(currentUser);
         consoleService.printTransfersList(currentUser, accountService, List.of(transfers));
-
+        return transfers;
 	}
 
-    private void viewTransferDetail() {
+    private void viewTransferDetail(TransferRequest[] transfers) {
         int transferId = -1;
+
+        List<TransferRequest> list = List.of(transfers);
 
         do {
             transferId = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
             try {
                 TransferRequest body = accountService.getTransferDetails(currentUser, transferId);
 
-                if(body != null) {
+                if(body != null && list.contains(body)) {
                     consoleService.printTransferDetails(currentUser, accountService, body);
                     consoleService.pause();
                     viewTransferHistory();

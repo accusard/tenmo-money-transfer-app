@@ -122,8 +122,6 @@ public class ConsoleService {
     }
 
     public void printTransfersList(AuthenticatedUser user, AccountService service, List<TransferRequest> transfers) {
-        final String FROM_STRING = "From: ";
-        final String TO_STRING = "To: ";
 
         System.out.println(LINE);
         System.out.println("Transfers");
@@ -133,29 +131,32 @@ public class ConsoleService {
         for (TransferRequest t : transfers) {
             long id = t.getTransferId();
 
-            StringBuilder typeString = new StringBuilder();
-            final String PREFIX = t.getType().equals("Send") ? TO_STRING : FROM_STRING;
-
-            typeString.append(PREFIX);
-            typeString.append(service.getUserNameByAccountId(user, t.getAccountToId()));
+            final String PREFIX = formatPrefix(user, t, service).toString();
             BigDecimal amount = t.getAmount();
-            System.out.println(String.format("%-10d %-15s $ %.2f", id, typeString, amount));
+            System.out.println(String.format("%-10d %-15s $ %.2f", id, PREFIX, amount));
         }
 
         System.out.println("-------");
     }
 
-//    public StringBuilder formatSendReceive(TransferRequest t) {
-//        // incomplete
-//        final String FROM_STRING = "From: ";
-//        final String TO_STRING = "To: ";
-//
-//        StringBuilder typeString = new StringBuilder();
-//        String type = t.getType();
-//        final String PREFIX = type.equals("Send") ? TO_STRING : FROM_STRING;
-//
-//        return typeString
-//    }
+    public StringBuilder formatPrefix(AuthenticatedUser user, TransferRequest transfer, AccountService service) {
+        final String FROM_STRING = "From: ";
+        final String TO_STRING = "To: ";
+        final String CURRENT_USER_NAME = user.getUser().getUsername();
+        final String FROM_USER_NAME = service.getUserNameByAccountId(user, transfer.getAccountFromId());
+        final String TO_USER_NAME = service.getUserNameByAccountId(user, transfer.getAccountToId());
+
+        StringBuilder typeString = new StringBuilder();
+        if(CURRENT_USER_NAME.equals(FROM_USER_NAME)) {
+            typeString.append(TO_STRING);
+            typeString.append(service.getUserNameByAccountId(user, transfer.getAccountToId()));
+        } else if (CURRENT_USER_NAME.equals(TO_USER_NAME)) {
+            typeString.append(FROM_STRING);
+            typeString.append(service.getUserNameByAccountId(user, transfer.getAccountFromId()));
+        }
+
+        return typeString;
+    }
 
     public void printTransferDetails(AuthenticatedUser user, AccountService service, TransferRequest transfer) {
         System.out.println(LINE);

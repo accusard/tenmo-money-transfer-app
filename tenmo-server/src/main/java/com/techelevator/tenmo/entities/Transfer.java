@@ -8,6 +8,12 @@ import java.math.BigDecimal;
 @Table(name = "transfer")
 public class Transfer {
 
+//    public final int STATUS_PENDING = 1;
+//    public final int STATUS_APPROVED = 2;
+//    public final int STATUS_REJECTED = 3;
+//    public final int TYPE_REQUEST = 1;
+//    public final int TYPE_SEND = 2;
+
     @Id
     @Column(name = "transfer_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

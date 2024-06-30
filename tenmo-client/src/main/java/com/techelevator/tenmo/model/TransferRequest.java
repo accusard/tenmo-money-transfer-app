@@ -93,4 +93,24 @@ public class TransferRequest {
                 return "Unknown Type";
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        TransferRequest other = (TransferRequest) obj;
+
+        return this.transferId == other.transferId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode((int)transferId);
+    }
+
 }

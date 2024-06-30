@@ -83,6 +83,7 @@ public class TransferService {
         transfer.setAccountFrom(accountId);
         transfer.setAmount(transferRequest.getAmount());
         transfer.setTransferStatusId(1);
+        transfer.setTransferTypeId(1);
         transferRepository.save(transfer);
         // Set other properties as needed
 
