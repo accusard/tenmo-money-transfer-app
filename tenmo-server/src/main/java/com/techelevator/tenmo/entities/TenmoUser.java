@@ -24,6 +24,7 @@ public class TenmoUser {
 
     @Column(name = "role")
     String role;
+
     @OneToMany(mappedBy = "tenmoUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Account> accounts;
 
