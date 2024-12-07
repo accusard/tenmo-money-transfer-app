@@ -26,7 +26,7 @@ Collaborated with a team to develop a robust service-side API, ensuring efficien
 
 ## Use cases
 
-The following use cases were implemented:
+The following use cases were implemented by our team:
 
 1. **User Registration**
    - Users can register with a username and password.
